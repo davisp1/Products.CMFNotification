@@ -75,6 +75,11 @@ class Renderer(base.Renderer):
             return False
         if not ntool.isExtraSubscriptionsEnabled():
             return False
+
+        # Don't show the portlet for temporary content in portal_factory
+        if getattr(self.context, 'isTemporary', lambda: False)():
+            return False
+
         return ntool.currentUserHasSubscribePermissionOn(self.context)
 
 
