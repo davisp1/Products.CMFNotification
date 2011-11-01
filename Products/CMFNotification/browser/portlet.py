@@ -50,7 +50,7 @@ class Assignment(base.Assignment):
     implements(ISubscriptionPortlet)
 
     title = mf(u'notification_portlet_header',
-               default=u'Mail subscription')
+               default=u'Subscription')
 
 
 class Renderer(base.Renderer):

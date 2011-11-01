@@ -6,7 +6,7 @@
 
   <dt class="portletHeader">
     <span class="portletTopLeft"></span>
-    <span i18n:translate="notification_portlet_header">Mail subscription</span>
+    <span i18n:translate="notification_portlet_header">Subscription</span>
     <span class="portletTopRight"></span>
   </dt>
 
@@ -53,18 +53,21 @@
       <form name="subscribe_form"
             method="post"
             tal:attributes="action string:${context_url}/subscribe">
-        <div tal:condition="view/isSubscriptionToParentAllowed">
+        <div tal:condition="view/isSubscriptionToParentAllowed"
+             class="subscribe-to-parent">
+          <div>This is the default view of a container.</div>
           <input type="checkbox"
                  name="subscribe_to_parent"
                  id="subscribe_to_parent"
                  value="true"/>
           <label for="subscribe_to_parent"
                  i18n:translate="label_subscribe_to_parent">
-            Subscribe to the folder above
+            Subscribe to the container
           </label>
         </div>
         <div tal:define="notifiers view/notifiers;
-                         hidden python:len(notifiers)==1">
+                         hidden python:len(notifiers)==1"
+             class="subscribe-notifiers">
             <tal:notifiers repeat="notifier notifiers">
                 <input type="checkbox" name="notifiers:list" id="notifiers"
                        tal:attributes="value notifier/id;

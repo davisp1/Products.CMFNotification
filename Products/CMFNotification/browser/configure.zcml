@@ -66,6 +66,11 @@
      name="cmfnotification.kss"
      file="resources/cmfnotification.kss"/>
 
+  <!-- CSS stylesheet -->
+  <browser:resource
+     name="cmfnotification.css"
+     file="resources/cmfnotification.css"/>
+
   <!-- Configlet Menu -->
   <browser:page
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
