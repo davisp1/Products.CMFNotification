@@ -28,7 +28,7 @@ class MailNotificationDelivery(object):
         if member is None:
             return 0
         email = member.getProperty('email', '')
-        if email is None:
+        if not email:
             return 0
         if not EMAIL_REGEXP.match(email):
             return 0
