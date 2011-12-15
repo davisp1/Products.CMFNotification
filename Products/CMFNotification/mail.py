@@ -22,10 +22,7 @@ class MailNotificationDelivery(object):
         return _(u'mail_notification_delivery_description',
                    default=u'Notify by email')
 
-    def notify(self, obj, user, what, label,
-                       get_users_extra_bindings,
-                       mail_template_extra_bindings,
-                       mail_template_options):
+    def notify(self, obj, user, what, label, bindings):
         mtool = getToolByName(obj, 'portal_membership')
         member = mtool.getMemberById(str(user))
         if member is None:
@@ -37,7 +34,7 @@ class MailNotificationDelivery(object):
             return 0
 
         pn = getToolByName(obj, 'portal_notification')
-        template = pn.getTemplate(obj, what, mail_template_extra_bindings)
+        template = pn.getTemplate(obj, what, bindings)
         if template is None:
             LOG.warning("No mail template for label '%s' for "\
                         "'%s' notification of '%s'",
@@ -45,7 +42,7 @@ class MailNotificationDelivery(object):
             return 0
 
         try:
-            message = template(**mail_template_options)
+            message = template(**bindings)
         except ConflictError:
             raise
         except:

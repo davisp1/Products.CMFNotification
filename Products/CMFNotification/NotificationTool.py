@@ -42,6 +42,7 @@ from AccessControl.PermissionRole import rolesForPermissionOn
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.Expression import Expression
+from Products.CMFEditions.interfaces.IArchivist import ArchivistUnregisteredError
 
 from Products.CMFNotification.utils import getBasicBindings
 from Products.CMFNotification.utils import encodeMailHeaders
@@ -258,10 +259,9 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
             return 0
 
         extra_bindings = getBasicBindings(obj)
-        return self._handlerHelper(obj, 'item_creation',
-                                   extra_bindings,
-                                   extra_bindings,
-                                   extra_bindings)
+        changenote = self._getChangeNote(obj)
+        extra_bindings.update({'changenote': changenote })
+        return self._handlerHelper(obj, 'item_creation', extra_bindings)
 
 
     decPrivate('onItemModification')
@@ -276,12 +276,11 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
             return 0
 
         extra_bindings = getBasicBindings(obj)
+        changenote = self._getChangeNote(obj)
         extra_bindings.update({'current': obj,
-                               'previous': getPreviousVersion(obj)})
-        return self._handlerHelper(obj, 'item_modification',
-                                   extra_bindings,
-                                   extra_bindings,
-                                   extra_bindings)
+                               'previous': getPreviousVersion(obj),
+                               'changenote': changenote })
+        return self._handlerHelper(obj, 'item_modification', extra_bindings)
 
     decPrivate('onItemRemoval')
     def onItemRemoval(self, obj):
@@ -295,10 +294,7 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
             return 0
 
         extra_bindings = getBasicBindings(obj)
-        return self._handlerHelper(obj, 'item_removal',
-                                   extra_bindings,
-                                   extra_bindings,
-                                   extra_bindings)
+        return self._handlerHelper(obj, 'item_removal', extra_bindings)
 
 
     decPrivate('onWorkflowTransition')
@@ -318,10 +314,7 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
         extra_bindings.update({'transition': action,
                                'comments': comments,
                                'previous_state': getPreviousWorkflowState(obj)})
-        return self._handlerHelper(obj, 'wf_transition',
-                                   extra_bindings,
-                                   extra_bindings,
-                                   extra_bindings)
+        return self._handlerHelper(obj, 'wf_transition', extra_bindings)
 
 
     decPrivate('onMemberRegistration')
@@ -346,8 +339,6 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
                                'properties': properties,
                                'event': 'registration'})
         return self._handlerHelper(member, 'member_registration',
-                                   extra_bindings,
-                                   extra_bindings,
                                    extra_bindings)
 
 
@@ -389,8 +380,6 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
                                'properties': properties,
                                'event': 'modification'})
         return self._handlerHelper(member, 'member_modification',
-                                   extra_bindings,
-                                   extra_bindings,
                                    extra_bindings)
 
 
@@ -414,24 +403,17 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
         extra_bindings = getBasicBindings(discussed_item)
         extra_bindings.update({'discussion_item': discussion_item,
                                'discussed_item': discussed_item})
-        return self._handlerHelper(discussion_item,
-                                   'discussion_item_creation',
-                                   extra_bindings,
-                                   extra_bindings,
+        return self._handlerHelper(discussion_item, 'discussion_item_creation',
                                    extra_bindings)
 
 
-    def _handlerHelper(self, obj, what,
-                       get_users_extra_bindings,
-                       mail_template_extra_bindings,
-                       mail_template_options):
+    def _handlerHelper(self, obj, what, extra_bindings):
         """An helper method for ``on*()`` handlers.
 
         It returns the number of mails which have been sent.
         """
         self._updateSubscriptionMapping(obj)
-        users_by_label = self.getUsersToNotify(obj, what,
-                                               get_users_extra_bindings)
+        users_by_label = self.getUsersToNotify(obj, what, extra_bindings)
         if self.isExtraSubscriptionsEnabled():
             users = users_by_label.get('', [])
             users.extend(self.getExtraSubscribersOf(self._getPath(obj)).items())
@@ -440,7 +422,8 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
         n_sent = 0
         for label, users in users_by_label.items():
             users = self.removeUnAuthorizedSubscribers(users, obj)
-            mail_template_extra_bindings['label'] = label
+            bindings = extra_bindings.copy()
+            bindings['label'] = label
             for user, how in users:
                 # Fetch the delivery utilities the user requested, then use
                 # that to notify
@@ -454,8 +437,7 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
                             "utility named '%s'", h)
                         continue
                     n_sent += delivery.notify(obj, user, what, label,
-                        get_users_extra_bindings, mail_template_extra_bindings,
-                        mail_template_options)
+                        bindings)
 
         return n_sent
     #################################################################
@@ -702,6 +684,25 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
         whether anonymous users can view ``obj``.
         """
         return 'Anonymous' in rolesForPermissionOn('View', obj)
+
+    def _getChangeNote(self, obj):
+        """ If obj has version control, get the last change note and
+        return it, otherwise return None. """
+        # CMFEditions might not be around, protect against that.
+        try:
+            archivist = getToolByName(self, 'portal_archivist')
+        except AttributeError:
+            return None
+
+        try:
+            history = archivist.getHistory(obj)
+        except ArchivistUnregisteredError:
+            return None
+
+        if len(history)>0:
+            return history[-1].sys_metadata['comment']
+        return None
+
     #################################################################
 
 
