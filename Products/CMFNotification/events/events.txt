@@ -19,7 +19,7 @@ want to notify users that such an item has been created. When we use
 ``invokeFactory()``, we usually edit it a few lines later. And, when
 we are done, we should fire an appropriate event:
 ``ObjectInitializedEvent`` is a quite good candidate, since it is the
-event tha is fired after a normal creation through a browser.
+event that is fired after a normal creation through a browser.
 
 This is why third-party products that uses ``invokeFactory()`` **may
 not work** with CMFNotification if they do not fire any event. If they
