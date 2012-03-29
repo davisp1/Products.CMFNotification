@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.3 (Unreleased)
+2.3b1 (Unreleased)
 --------------------
 
 - Added a confliglet to allow admins to see the list of users
@@ -13,6 +13,13 @@ Changelog
   notification methods in the same way, and CMFNotification will be able 
   to use them. This allows for other distribution methods than just email. 
   [izakburger]
+
+
+2.2 (29 March 2011)
+-------------------
+
+- Minor tweaks to the README and the setup.py files. [dbaty]
+
 
 2.2 release candidate 2 (6 January 2011)
 ----------------------------------------

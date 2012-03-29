@@ -2,9 +2,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-
-version = open(os.path.join(
-        'Products', 'CMFNotification', 'version.txt')).read().strip()
+version = '2.3b1'
 description = open('README.txt').read().strip()
 long_description = '\n\n'.join((
         open(os.path.join(
