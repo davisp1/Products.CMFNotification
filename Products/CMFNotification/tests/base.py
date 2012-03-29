@@ -40,7 +40,7 @@ NotificationTool.LOG = logging.getLogger()
 
 ## A fake mail host which does not send emails but keep them in a
 ## list.
-NotificationTool.MAIL_HOST_META_TYPES = ('FakeMailHost', )
+NotificationTool.MAIL_HOST_META_TYPES += ('FakeMailHost',)
 
 class FakeMailHost(SimpleItem):
     meta_type = 'FakeMailHost'

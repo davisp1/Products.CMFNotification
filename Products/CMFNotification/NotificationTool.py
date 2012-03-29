@@ -67,6 +67,9 @@ LOG = logging.getLogger('CMFNotification')
 ## Ignore objects temporarily created by the Plone Factory Tool
 DEFAULT_IGNORE_RULES = ["python: getattr(context, 'isTemporary', lambda: False)()"]
 
+MAIL_HOST_META_TYPES = ('Mail Host', 'Secure Mail Host', 'Maildrop Host',
+    'Secure Maildrop Host')
+
 
 class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
     """Main notification tool."""

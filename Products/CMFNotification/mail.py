@@ -4,13 +4,11 @@ from zope.interface import implements
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import MessageFactory
 from Products.CMFNotification.utils import encodeMailHeaders
-from Products.CMFNotification.NotificationTool import EMAIL_REGEXP
+from Products.CMFNotification import NotificationTool
 from Products.CMFNotification.exceptions import MailHostNotFound
 from Products.CMFNotification.interfaces import INotificationDelivery
 
 LOG = logging.getLogger('CMFNotification.mail')
-MAIL_HOST_META_TYPES = ('Mail Host', 'Secure Mail Host', 'Maildrop Host',
-    'Secure Maildrop Host')
 
 _ = MessageFactory('cmfnotification')
 
@@ -30,7 +28,7 @@ class MailNotificationDelivery(object):
         email = member.getProperty('email', '')
         if not email:
             return 0
-        if not EMAIL_REGEXP.match(email):
+        if not NotificationTool.EMAIL_REGEXP.match(email):
             return 0
 
         pn = getToolByName(obj, 'portal_notification')
@@ -57,7 +55,7 @@ class MailNotificationDelivery(object):
     def sendNotification(self, obj, address, message):
         """Send ``message`` to ``address``."""
         portal = obj.restrictedTraverse('@@plone_portal_state').portal()
-        mailhosts = portal.superValues(MAIL_HOST_META_TYPES)
+        mailhosts = portal.superValues(NotificationTool.MAIL_HOST_META_TYPES)
         if not mailhosts:
             raise MailHostNotFound
         mailhost = mailhosts[0]
