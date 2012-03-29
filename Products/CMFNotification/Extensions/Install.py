@@ -75,6 +75,7 @@ def uninstall(context):
     panel = getToolByName(portal, 'portal_controlpanel')
     if panel is not None:
         panel.unregisterConfiglet('cmfnotification_configuration')
+        panel.unregisterConfiglet('cmf_notification_unsubscribemenu')
 
     ## For some reason, under Plone 3, the tool is not removed by the
     ## GenericSetup 'uninstall' profile.
