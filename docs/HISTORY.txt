@@ -1,8 +1,8 @@
 Changelog
 =========
 
-2.3b1 (Unreleased)
---------------------
+2.3b1 (2012-03-29)
+------------------
 
 - Added a confliglet to allow admins to see the list of users
   that are subscribed and to be able to unsubscribe whoever
