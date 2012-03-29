@@ -32,7 +32,7 @@ from OFS.SimpleItem import SimpleItem
 from ZODB.POSException import ConflictError
 from OFS.PropertyManager import PropertyManager
 from persistent.mapping import PersistentMapping
-from zope.component import getUtility, ComponentLookupError
+from zope.component import getUtility
 
 from AccessControl import Unauthorized
 from AccessControl import ClassSecurityInfo
@@ -45,12 +45,10 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFEditions.interfaces.IArchivist import ArchivistUnregisteredError
 
 from Products.CMFNotification.utils import getBasicBindings
-from Products.CMFNotification.utils import encodeMailHeaders
 from Products.CMFNotification.utils import getPreviousVersion
 from Products.CMFNotification.utils import getExpressionContext
 from Products.CMFNotification.utils import getPreviousWorkflowState
 from Products.CMFNotification.exceptions import DisabledFeature
-from Products.CMFNotification.exceptions import MailHostNotFound
 from Products.CMFNotification.exceptions import InvalidEmailAddress
 from Products.CMFNotification.permissions import SUBSCRIBE_PERMISSION
 from Products.CMFNotification.interfaces import INotificationDelivery
