@@ -106,6 +106,8 @@ product:
 - Gaël Pasgrimaud: bug fixes, insightful comments and default mail
   templates in the early days.
 
+- Izak Burger: Let the notification mechanism be a named utility.
+
 Translations:
 
 - Gunter Vasold (gunter DOT vasold AT fh-joanneum DOT at - FH
@@ -117,8 +119,6 @@ Translations:
 - Leonardo caballero: translation in Spanish;
 
 - Victor Fernandez de Alba: translation in Catalan.
-
-- Izak Burger: Let the notification mechanism be a named utility.
 
 .. _Pilot Systems: http://www.pilotsystems.net
 
