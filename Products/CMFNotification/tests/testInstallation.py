@@ -76,8 +76,9 @@ class TestUnInstallation(CMFNotificationTestCase):
         """Uninstall the product before running each test."""
         qtool = getToolByName(self.portal, 'portal_quickinstaller')
         self.setRoles(['Manager'])
+        products = self.portal.Control_Panel.Products
         version = \
-            self.portal.Control_Panel.Products.CMFQuickInstallerTool.version
+            products.get('CMFQuickInstallerTool', {}).get('version', '')
         version = version.split('.')[0]
         ## Plone 3.x is shipped with CMFQuickInstallerTool 2.1.7 which
         ## does not see Products.CMFNotification in the list of

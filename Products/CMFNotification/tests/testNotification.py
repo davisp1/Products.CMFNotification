@@ -11,6 +11,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.Archetypes.event import ObjectInitializedEvent
 
 from Products.CMFNotification.NotificationTool import ID as NTOOL_ID
+from Products.CMFNotification.events.handlers import onItemRemoval_hook
 
 from Products.CMFNotification.tests.base import FakeMailHost
 from Products.CMFNotification.tests.base import CMFNotificationTestCase
@@ -333,9 +334,12 @@ class TestNotification(CMFNotificationTestCase):
         ## See 'events/events.txt' for futher details about this
         ## manually fired event.
         event.notify(ObjectInitializedEvent(portal['document']))
+        obj = portal['document']
         # Do removal
         portal.manage_delObjects(['document'])
-        
+        onItemRemoval_hook(True, obj) # Normally this gets called by an after 
+        # commit hook. But using transcation.commit() here to trigger it causes
+        # all kinds of problems.
         self.failUnlessSent(1)
         mh.clearSentList()
 
@@ -344,7 +348,9 @@ class TestNotification(CMFNotificationTestCase):
         wtool.simple_publication_workflow.initial_state = 'published'
         portal.invokeFactory('Document', 'document')
         event.notify(ObjectInitializedEvent(portal['document']))
+        obj = portal['document']
         portal.manage_delObjects(['document'])
+        onItemRemoval_hook(True, obj) 
         self.failUnlessSent(3)
         mh.clearSentList()
 
@@ -694,13 +700,13 @@ class TestNotification(CMFNotificationTestCase):
         changeProperty('on_item_modification_users', users)
         changeProperty('on_item_modification_mail_template', templates)
         modifyItem(document)
-        self.failUnlessSent(2) # 1 for manager; 1 for member1
+        self.failUnlessSent(3) # 2 for manager; 1 for member1
         mh.clearSentList()
 
         ## Test that manually subscribed users are available under the
         ## empty label.
         changeProperty('extra_subscriptions_enabled', True)
-        ntool._subscriptions[ntool._getPath(document)] = {'member1': 1}
+        ntool._subscriptions[ntool._getPath(document)] = {'member1': ('mail',)}
         users = []
         templates = ['python: label == "one" :: string:modification_mail_notification']
         changeProperty('on_item_modification_users', users)
