@@ -118,6 +118,8 @@ Translations:
 
 - Victor Fernandez de Alba: translation in Catalan.
 
+- Izak Burger: Let the notification mechanism be a named utility.
+
 .. _Pilot Systems: http://www.pilotsystems.net
 
 
