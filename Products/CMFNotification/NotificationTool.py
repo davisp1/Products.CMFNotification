@@ -31,7 +31,8 @@ from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from ZODB.POSException import ConflictError
 from OFS.PropertyManager import PropertyManager
-from persistent.mapping import PersistentMapping
+from BTrees.IOBTree import IOBTree
+from BTrees.OOBTree import OOBTree
 from zope.component import getUtility
 
 from AccessControl import Unauthorized
@@ -237,8 +238,8 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
 
 
     def __init__(self, *args, **kwargs):
-        self._uid_to_path = PersistentMapping()
-        self._subscriptions = PersistentMapping()
+        self._uid_to_path = IOBTree()
+        self._subscriptions = OOBTree()
 
 
     #################################################################

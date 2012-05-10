@@ -4,8 +4,8 @@ Changelog
 2.3b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Replaced PersistentMapping with IOBTree/OOBTree. PersistentMapping
+  does not scale well at all. [pysailor]
 
 2.3b1 (2012-03-29)
 ------------------
