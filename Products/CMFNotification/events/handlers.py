@@ -44,9 +44,17 @@ def onItemRemoval_hook(status, *args, **kwargs):
 
 def onObjectRemovedEvent(obj, event):
     """Subscriber for ``ObjectRemovedEvent``."""
-    # we wait for transaction completion as removal can be aborted
+    # if we're on delete_confirmation, only trigger if submitted and not cancelled
+    if obj.REQUEST.getURL().endswith('delete_confirmation') and \
+       (obj.REQUEST.form.get('form.button.Cancel', None) == 'Cancel' or
+                    not obj.REQUEST.form.get('form.submitted')):
+        return
     currentTransaction = transaction.get()
-    currentTransaction.addAfterCommitHook(onItemRemoval_hook, args=(obj, ))
+    # check if we already set the hook
+    if len([x for x in currentTransaction.getAfterCommitHooks() 
+              if x[0] == onItemRemoval_hook and obj in x[1]]) == 0:
+        # we wait for transaction completion as removal can be aborted
+        currentTransaction.addAfterCommitHook(onItemRemoval_hook, args=(obj, ))
 
 
 def onActionSucceededEvent(obj, event):
