@@ -6,6 +6,8 @@ Changelog
 
 - Replaced PersistentMapping with IOBTree/OOBTree. PersistentMapping
   does not scale well at all. [pysailor]
+- filter out some cases to avoid sending triple notifications for
+  OnObjectRemovedEvent [reinhardt]
 
 2.3b1 (2012-03-29)
 ------------------
