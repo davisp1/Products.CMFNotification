@@ -4,7 +4,8 @@ Changelog
 2.3b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- try reading changenote from request, it's not written to history yet
+  [reinhardt]
 
 
 2.3b2dev0 (2012-05-18)
