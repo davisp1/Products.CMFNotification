@@ -690,6 +690,10 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
     def _getChangeNote(self, obj):
         """ If obj has version control, get the last change note and
         return it, otherwise return None. """
+        request_changenote = self.REQUEST.get('cmfeditions_version_comment')
+        if request_changenote is not None:
+            return request_changenote
+
         # CMFEditions might not be around, protect against that.
         try:
             archivist = getToolByName(self, 'portal_archivist')
