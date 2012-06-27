@@ -7,14 +7,12 @@ Changelog
 - try reading changenote from request, it's not written to history yet
   [reinhardt]
 
-
-2.3b2dev0 (2012-05-18)
-----------------------
+- filter out some cases to avoid sending triple notifications for
+  OnObjectRemovedEvent [reinhardt]
 
 - Replaced PersistentMapping with IOBTree/OOBTree. PersistentMapping
   does not scale well at all. [pysailor]
-- filter out some cases to avoid sending triple notifications for
-  OnObjectRemovedEvent [reinhardt]
+
 
 2.3b1 (2012-03-29)
 ------------------
@@ -23,10 +21,10 @@ Changelog
   that are subscribed and to be able to unsubscribe whoever
   they want easily [lucielejard]
 
-- The actual notification process, namely sending an email to interested 
-  users, has been split into a named utility. You can register your own 
-  notification methods in the same way, and CMFNotification will be able 
-  to use them. This allows for other distribution methods than just email. 
+- The actual notification process, namely sending an email to interested
+  users, has been split into a named utility. You can register your own
+  notification methods in the same way, and CMFNotification will be able
+  to use them. This allows for other distribution methods than just email.
   [izakburger]
 
 
@@ -67,7 +65,7 @@ Changelog
 2.2a1 (21 April 2010)
 ---------------------
 
-- Registered the permission in zcml and call setDefaultRoles in __init__.py. [jcbrand] 
+- Registered the permission in zcml and call setDefaultRoles in __init__.py. [jcbrand]
 
 
 2.2dev1 (25 February 2010)
