@@ -768,7 +768,7 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
 
 
     decPublic('subscribeTo')
-    def subscribeTo(self, obj, email=None, how=['mail']):
+    def subscribeTo(self, obj, email=None, how=['mail'], user=None):
         """Subscribe ``email`` (or the current user if ``email`` is
         None) to ``obj``. You can pass the methods by which the user should
         be notified as a tuple using the ``how`` keyword argument.
@@ -778,24 +778,33 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
 
         if not self.currentUserHasSubscribePermissionOn(obj):
             raise Unauthorized
-        elif email is not None:
+        
+        if email is not None:
             if not EMAIL_REGEXP.match(email):
                 raise InvalidEmailAddress
             ## FIXME: an anonymous user would like to subscribe
             ## his/her address. This has not yet been implemented, so
             ## we raise an exception.
             raise NotImplementedError
+        
+        user_id = None;
+        if user:
+            user_id = user.getId()
         else:
+            user_id = getSecurityManager().getUser().getId()
+
+        if user_id:
             self._updateSubscriptionMapping(obj)
             path = self._getPath(obj)
             subscribers = self._subscriptions.get(path, {})
-            user = getSecurityManager().getUser().getId()
-            subscribers[user] = tuple(how)
+            subscribers[user_id] = tuple(how)
             self._subscriptions[path] = subscribers
+        else:
+            raise UserNotFoundError
 
 
     decPublic('unSubscribeFrom')
-    def unSubscribeFrom(self, obj, email=None):
+    def unSubscribeFrom(self, obj, email=None, user=None):
         """Unsubscribe ``email`` (or the current user if ``email`` is
         ``None``) from ``obj``.
         """
@@ -804,20 +813,27 @@ class NotificationTool(UniqueObject, SimpleItem, PropertyManager):
 
         if not self.currentUserHasSubscribePermissionOn(obj):
             raise Unauthorized
-        elif email is not None:
+
+        if email is not None:
             if not EMAIL_REGEXP.match(email):
                 raise InvalidEmailAddress
             ## FIXME: an anonymous user would like to unsubscribe
             ## his/her address. This has not yet been implemented, so
             ## we raise an exception.
             raise NotImplementedError
+        
+        user_id = None;
+        if user:
+            user_id = user.getId()
         else:
+            user_id = getSecurityManager().getUser().getId()
+
+        if user_id:
             self._updateSubscriptionMapping(obj)
             path = self._getPath(obj)
             subscribers = self._subscriptions.get(path, {})
-            user = getSecurityManager().getUser().getId()
             try:
-                del subscribers[user]
+                del subscribers[user_id]
                 self._subscriptions[path] = subscribers
             except KeyError:
                 pass ## User was not subscribed.
